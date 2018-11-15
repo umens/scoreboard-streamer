@@ -1,0 +1,5 @@
+<div class="row" *ngFor="let row of gridItems">
+  <div class="col-md-{{ (12 / gridCols) }}" *ngFor="let item of row">
+    <ng-container *ngTemplateOutlet="template; context: { $implicit: item }"></ng-container>
+  </div>
+</div>
