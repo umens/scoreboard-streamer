@@ -30,21 +30,21 @@ export class ForgotPasswordComponent {
   forgot(): void {
     this.error = null;
     this.isLoading = true;
-    // this.authenticationService.forgotPassord(this.forgotPasswordForm.value)
-    //   .pipe(finalize(() => {
-    //     this.forgotPasswordForm.markAsPristine();
-    //     this.isLoading = false;
-    //   }))
-    //   .subscribe(() => {
-    //     this.logger.debug(`Email send`);
-    //     this.mailSend = true;
-    //     setTimeout(() => {
-    //       this.router.navigate(['/login'], { replaceUrl: true });
-    //     }, 10000);
-    //   }, error => {
-    //     this.logger.error(`Password reset error: ${error}`);
-    //     this.error = error.error;
-    //   });
+    this.authenticationService.forgotPassord(this.forgotPasswordForm.value)
+      .pipe(finalize(() => {
+        this.forgotPasswordForm.markAsPristine();
+        this.isLoading = false;
+      }))
+      .subscribe(() => {
+        this.logger.debug(`Email send`);
+        this.mailSend = true;
+        setTimeout(() => {
+          this.router.navigate(['/login'], { replaceUrl: true });
+        }, 10000);
+      }, error => {
+        this.logger.error(`Password reset error`, error);
+        this.error = error.error;
+      });
   }
 
   private createForm(): void {

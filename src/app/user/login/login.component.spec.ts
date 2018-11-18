@@ -3,8 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
-import { NotificationService, AuthenticationService, CoreModule } from '../../core';
 import { SharedModule } from '../../shared';
+import { CoreModule } from 'src/app/core/core.module';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;

@@ -5,13 +5,11 @@ import { CreateAccountComponent } from './create-account/create-account.componen
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ProfileComponent } from './profile/profile.component';
 import { Route } from '../core/services/route.service';
-import { PublicGuard, ProtectedGuard } from 'ngx-auth';
 
 const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [ PublicGuard ],
     data: {
       title: 'Login'
     }
@@ -19,7 +17,6 @@ const routes: Routes = [
   {
     path: 'create-account',
     component: CreateAccountComponent,
-    canActivate: [ PublicGuard ],
     data: {
       title: 'Create Account'
     }
@@ -27,7 +24,6 @@ const routes: Routes = [
   {
     path: 'forgot-password',
     component: ForgotPasswordComponent,
-    canActivate: [ PublicGuard ],
     data: {
       title: 'Forgot Password'
     }
@@ -36,7 +32,6 @@ const routes: Routes = [
     {
       path: 'profile',
       component: ProfileComponent,
-      canActivate: [ ProtectedGuard ],
       data: {
         title: 'Profile'
       }

@@ -7,7 +7,9 @@ import { SplitByColumnPipe } from './pipes/split-by-column.pipe';
 import { DefaultPipe } from './pipes/default.pipe';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { ListItemDirective } from './directives/list-item.directive';
+import { CardItemDirective } from './directives/card-item.directive';
 import { RippleDirective } from './directives/ripple.directive';
+import { CardOrListViewComponent } from './card-or-list-view/card-or-list-view.component';
 
 @NgModule({
   imports: [
@@ -19,7 +21,9 @@ import { RippleDirective } from './directives/ripple.directive';
     SplitByColumnPipe,
     DefaultPipe,
     ListItemDirective,
-    RippleDirective
+    CardItemDirective,
+    RippleDirective,
+    CardOrListViewComponent,
   ],
   exports: [
     LoaderComponent,

@@ -30,7 +30,7 @@ export class HeaderComponent implements OnInit {
   }
 
   get user(): User | null {
-    const credentials = this.authenticationService.getAccessToken();
+    const credentials = this.authenticationService.credentials;
     return credentials ? new User(credentials) : null;
   }
 

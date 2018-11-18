@@ -1,5 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // Library Modules
@@ -17,17 +19,19 @@ import { UserModule } from './user/user.module';
     AppComponent
   ],
   imports: [
-    LoggerModule.forRoot({
-      serverLoggingUrl: '/api/logs',
-      level: NgxLoggerLevel.DEBUG,
-      serverLogLevel: NgxLoggerLevel.ERROR
-    }),
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
     CoreModule,
     SharedModule,
     UserModule,
+    AppRoutingModule,
+    LoggerModule.forRoot({
+      // serverLoggingUrl: 'logs',
+      level: NgxLoggerLevel.DEBUG,
+      serverLogLevel: NgxLoggerLevel.ERROR
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]

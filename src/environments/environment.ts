@@ -7,6 +7,7 @@ export const environment = {
   hmr: false,
   version: '1.0.0-dev',
   serverUrl: 'http://localhost:3000/',
+  logServerUrl: 'https://rtest.free.beeceptor.com/',
 };
 
 /*

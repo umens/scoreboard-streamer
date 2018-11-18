@@ -17,7 +17,7 @@ import { NotificationType, Notification } from './models';
 })
 export class AppComponent implements OnInit {
 
-  options: NotificationDisplayOptions = {
+  protected options: NotificationDisplayOptions = {
     timeOut: 5000,
     lastOnBottom: true,
     clickToClose: true,

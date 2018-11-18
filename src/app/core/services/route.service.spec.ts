@@ -1,10 +1,10 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { AuthenticationService } from '../authentication/authentication.service';
+import { MockAuthenticationService } from '../authentication/authentication.service.mock';
+import { AuthenticationGuard } from '../authentication/authentication.guard';
 import { ShellComponent } from '../shell/shell.component';
 import { Route } from './route.service';
-import { ProtectedGuard } from 'ngx-auth';
-import { MockAuthenticationService } from './authentication.service.mock';
 
 describe('Route', () => {
   let route: Route;
@@ -12,7 +12,7 @@ describe('Route', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        ProtectedGuard ,
+        AuthenticationGuard,
         { provide: AuthenticationService, useClass: MockAuthenticationService },
         Route
       ]

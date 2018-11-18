@@ -1,128 +1,146 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { tap, map, switchMap, catchError } from 'rxjs/operators';
-import { AuthService } from 'ngx-auth';
+import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map, catchError } from 'rxjs/operators';
 
-import { TokenStorageService } from './token-storage.service';
-
-interface AccessData {
-  accessToken: string;
-  refreshToken: string;
+export interface Credentials {
+  // Customize received credentials here
+  firstname: string;
+  lastname: string;
+  email: string;
+  picture: string;
+  scope: string;
+  token: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthenticationService implements AuthService {
+export interface LoginContext {
+  username: string;
+  password: string;
+  remember?: boolean;
+}
+export interface CreateAccountContext {
+  firstname: string;
+  lastname: string;
+  password: string;
+  email: string;
+  agreeCGU?: boolean;
+}
+export interface ForgotPasswordContext {
+  email: string;
+}
 
-  private interruptedUrl: string;
+const credentialsKey = 'credentials';
 
-  constructor(
-    private http: HttpClient,
-    private tokenStorage: TokenStorageService
-  ) {}
+/**
+ * Provides a base for authentication workflow.
+ * The Credentials interface as well as login/logout methods should be replaced with proper implementation.
+ */
+@Injectable()
+export class AuthenticationService {
 
-  /**
-   * Check, if user already authorized.
-   * @description Should return Observable with true or false values
-   * @returns {Observable<boolean>}
-   * @memberOf AuthService
-   */
-  public isAuthorized(): Observable<boolean> {
-    return this.tokenStorage
-      .getAccessToken()
-      .pipe(map(token => !!token));
+  private _credentials: Credentials | null;
+  redirectUrl: string;
+
+  constructor(private httpClient: HttpClient) {
+    const savedCredentials = sessionStorage.getItem(credentialsKey) || localStorage.getItem(credentialsKey);
+    if (savedCredentials) {
+      this._credentials = JSON.parse(savedCredentials);
+    }
   }
 
   /**
-   * Get access token
-   * @description Should return access token in Observable from e.g.
-   * localStorage
-   * @returns {Observable<string>}
+   * Authenticates the user.
+   * @param {LoginContext} context The login parameters.
+   * @return {Observable<Credentials>} The user credentials.
    */
-  public getAccessToken(): Observable<string> {
-    return this.tokenStorage.getAccessToken();
-  }
-
-  /**
-   * Function, that should perform refresh token verifyTokenRequest
-   * @description Should be successfully completed so interceptor
-   * can execute pending requests or retry original one
-   * @returns {Observable<any>}
-   */
-  public refreshToken(): Observable<AccessData> {
-    return this.tokenStorage
-      .getRefreshToken()
+  login(context: LoginContext): Observable<Credentials> {
+    return this.httpClient.post<Credentials>('login', { email: context.username, password: context.password })
       .pipe(
-        switchMap((refreshToken: string) =>
-          this.http.post(`http://localhost:3000/refresh`, { refreshToken })
-        ),
-        tap((tokens: AccessData) => this.saveAccessData(tokens)),
+        map(data => {
+          this.setCredentials(data, context.remember);
+          return data;
+        }),
         catchError((err) => {
-          this.logout();
-
-          return Observable.throw(err);
+          throw err;
         })
       );
   }
 
   /**
-   * Function, checks response of failed request to determine,
-   * whether token be refreshed or not.
-   * @description Essentialy checks status
-   * @param {Response} response
-   * @returns {boolean}
+   * Logs out the user and clear credentials.
+   * @return {Observable<boolean>} True if the user was logged out successfully.
    */
-  public refreshShouldHappen(response: HttpErrorResponse): boolean {
-    return response.status === 401;
+  logout(): Observable<boolean> {
+    // Customize credentials invalidation here
+    this.setCredentials();
+    return of(true);
   }
 
   /**
-   * Verify that outgoing request is refresh-token,
-   * so interceptor won't intercept this request
-   * @param {string} url
-   * @returns {boolean}
+   * Checks is the user is authenticated.
+   * @return {boolean} True if the user is authenticated.
    */
-  public verifyTokenRequest(url: string): boolean {
-    return url.endsWith('/refresh');
+  isAuthenticated(): boolean {
+    return !!this.credentials;
   }
 
   /**
-   * EXTRA AUTH METHODS
+   * Gets the user credentials.
+   * @return {Credentials} The user credentials or null if the user is not authenticated.
    */
-
-  public login(): Observable<any> {
-    return this.http.post(`http://localhost:3000/login`, { })
-    .pipe(tap((tokens: AccessData) => this.saveAccessData(tokens)));
+  get credentials(): Credentials | null {
+    return this._credentials;
   }
 
   /**
-   * Logout
+   * Sets the user credentials.
+   * The credentials may be persisted across sessions by setting the `remember` parameter to true.
+   * Otherwise, the credentials are only persisted for the current session.
+   * @param {Credentials=} credentials The user credentials.
+   * @param {boolean=} remember True to remember credentials across sessions.
    */
-  public logout(): void {
-    this.tokenStorage.clear();
-    location.reload(true);
+  private setCredentials(credentials?: Credentials, remember?: boolean) {
+    this._credentials = credentials || null;
+
+    if (credentials) {
+      const storage = remember ? localStorage : sessionStorage;
+      storage.setItem(credentialsKey, JSON.stringify(credentials));
+    } else {
+      sessionStorage.removeItem(credentialsKey);
+      localStorage.removeItem(credentialsKey);
+    }
   }
 
-  public getInterruptedUrl(): string {
-    return this.interruptedUrl;
+  createAccount(context: CreateAccountContext): Observable<any> {
+    return this.httpClient.post<any>('create-account', {
+      email: context.email,
+      password: context.password,
+      firstname: context.firstname,
+      lastname: context.lastname
+    })
+      .pipe(
+        map(data => {
+          // this.setCredentials(data, context.remember);
+          return data;
+        }),
+        catchError((err) => {
+          throw err;
+        })
+      );
   }
 
-  public setInterruptedUrl(url: string): void {
-    this.interruptedUrl = url;
-  }
-
-  /**
-   * Save access data in the storage
-   *
-   * @private
-   * @param {AccessData} data
-   */
-  private saveAccessData({ accessToken, refreshToken }: AccessData) {
-    this.tokenStorage
-      .setAccessToken(accessToken)
-      .setRefreshToken(refreshToken);
+  forgotPassord(context: ForgotPasswordContext): Observable<any> {
+    return this.httpClient.post<any>('forgot-password', {
+      email: context.email
+    })
+      .pipe(
+        map(data => {
+          return data;
+        }),
+        catchError((err) => {
+          throw err;
+        })
+      );
   }
 
 }

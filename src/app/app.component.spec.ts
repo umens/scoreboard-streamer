@@ -1,18 +1,21 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { LoggerTestingModule } from 'ngx-logger';
+import { LoggerTestingModule, NGXLogger } from 'ngx-logger';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        LoggerTestingModule
+        LoggerTestingModule,
       ],
       declarations: [
         AppComponent
       ],
+      providers: [NGXLogger],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
   }));
 

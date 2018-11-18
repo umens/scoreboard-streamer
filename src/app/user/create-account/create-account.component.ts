@@ -30,21 +30,21 @@ export class CreateAccountComponent {
 
   create(): void {
     this.isLoading = true;
-    // this.authenticationService.createAccount(this.createAccountForm.value)
-    //   .pipe(finalize(() => {
-    //     this.createAccountForm.markAsPristine();
-    //     this.isLoading = false;
-    //   }))
-    //   .subscribe(() => {
-    //     this.logger.debug(`Account successfully created`);
-    //     this.mailSend = true;
-    //     setTimeout(() => {
-    //       this.router.navigate(['/login'], { replaceUrl: true });
-    //     }, 10000);
-    //   }, error => {
-    //     this.logger.error(`Account creation error: ${error}`);
-    //     this.error = error.error;
-    //   });
+    this.authenticationService.createAccount(this.createAccountForm.value)
+      .pipe(finalize(() => {
+        this.createAccountForm.markAsPristine();
+        this.isLoading = false;
+      }))
+      .subscribe(() => {
+        this.logger.debug(`Account successfully created`);
+        this.mailSend = true;
+        setTimeout(() => {
+          this.router.navigate(['/login'], { replaceUrl: true });
+        }, 10000);
+      }, error => {
+        this.logger.error(`Account creation error`, error);
+        this.error = error.error;
+      });
   }
 
   private createForm(): void {

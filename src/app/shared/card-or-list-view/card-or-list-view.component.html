@@ -1,0 +1,12 @@
+<ng-container [ngSwitch]="mode">
+  <ng-container *ngSwitchCase="'card'">
+    <ng-container *ngFor="let item of items">
+      <ng-container *ngTemplateOutlet="cardItemTemplate; context: {$implicit: item}"></ng-container>
+    </ng-container>
+  </ng-container>
+  <ul *ngSwitchCase="'list'">
+    <li *ngFor="let item of items">
+      <ng-container *ngTemplateOutlet="listItemTemplate; context: {$implicit: item}"></ng-container>
+    </li>
+  </ul>
+  </ng-container>

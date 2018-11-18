@@ -1,5 +1,4 @@
 import { Component, OnChanges, Input, SimpleChanges, SimpleChange, ContentChild, TemplateRef } from '@angular/core';
-import { ListItemDirective } from '../directives/list-item.directive';
 
 @Component({
   selector: 'app-build-column',

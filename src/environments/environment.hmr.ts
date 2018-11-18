@@ -3,4 +3,5 @@ export const environment = {
   hmr: true,
   version: '1.0.0-dev',
   serverUrl: 'http://localhost:3000/',
+  logServerUrl: 'https://rtest.free.beeceptor.com/',
 };
